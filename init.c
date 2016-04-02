@@ -9,7 +9,7 @@ int RandSeed(int myrank)
     return rand() % MAX_SEED;
 }
 
-double** InitMyMatrix(int myrank, int numranks, double matrix_size)
+double** InitMyMatrix(int myrank, int numranks, int matrix_size)
 {
     int i, j;
     int seed = RandSeed(myrank);

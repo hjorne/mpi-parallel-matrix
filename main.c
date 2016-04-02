@@ -3,7 +3,7 @@
 #include "clcg4.h"
 #include "init.h"
 
-#define MATRIX_SIZE 100
+#define MATRIX_SIZE 64
 
 int main(int argc, char** argv)
 {
