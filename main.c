@@ -20,5 +20,6 @@ int main(int argc, char** argv)
     double** transpose = CalculateTranspose(MATRIX_SIZE/numranks, MATRIX_SIZE, NUM_THREADS, mymat);
 
     MPI_Barrier( MPI_COMM_WORLD );
+    MPI_Finalize();
     return 0;
 }
