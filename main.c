@@ -2,8 +2,10 @@
 #include <mpi.h>
 #include "clcg4.h"
 #include "init.h"
+#include "trans.h"
 
 #define MATRIX_SIZE 64
+#define NUM_THREADS 16
 
 int main(int argc, char** argv)
 {
@@ -15,6 +17,7 @@ int main(int argc, char** argv)
     InitDefault();  // clcg4 initialization
 
     double** mymat = InitMyMatrix(myrank, numranks, MATRIX_SIZE);
+    double** transpose = CalculateTranspose(MATRIX_SIZE/numranks, MATRIX_SIZE, NUM_THREADS, mymat);
 
     MPI_Barrier( MPI_COMM_WORLD );
     return 0;
