@@ -20,6 +20,8 @@ int main(int argc, char** argv)
 
     double** mymat = InitMyMatrix(myrank, numranks, MATRIX_SIZE);
     double** transpose = CalculateTranspose(MATRIX_SIZE/numranks, MATRIX_SIZE, NUM_THREADS, mymat);
+    double** new_transpose = transferData(myrank, numranks, MATRIX_SIZE, mymat, transpose);
+    double** added = addMatrix(numranks, MATRIX_SIZE, NUM_THREADS, mymat, new_transpose);
 
     MPI_Barrier( MPI_COMM_WORLD );
     MPI_Finalize();
