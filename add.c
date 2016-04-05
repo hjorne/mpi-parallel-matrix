@@ -27,7 +27,7 @@ void* handleAdd(void * arg)
     pthread_exit(0);
 }
 
-double** add_matrix(int num_ranks, int matrix_size, int num_threads, double** orig, double** transpose)
+double** addMatrix(int num_ranks, int matrix_size, int num_threads, double** orig, double** transpose)
 {
     int numrows = matrix_size / num_ranks;
     double** added = (double**) calloc(numrows, sizeof(double*));
