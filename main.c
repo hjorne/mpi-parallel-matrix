@@ -3,6 +3,8 @@
 #include "clcg4.h"
 #include "init.h"
 #include "trans.h"
+#include "data.h"
+#include "add.h"
 
 #define MATRIX_SIZE 64
 #define NUM_THREADS 16
