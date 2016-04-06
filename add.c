@@ -17,7 +17,7 @@ void* handleAdd(void * arg)
 {
     struct addThreadArgs *args = arg;
     int i, j;
-    for(i = args->matrix_row_start; i < args->matrix_row_start + args->num_rows; i++)
+    for(i = args->row_start; i < args->row_start + args->num_rows; i++)
     {
         for(j = 0; j < args->row_length; j++)
         {
