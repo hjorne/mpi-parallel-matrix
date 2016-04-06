@@ -27,5 +27,13 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
             }
         }
     }
+    
+    MPI_Status stat;
+    
+    for(i=0; i < (numranks * numrows); i++)
+    {
+        MPI_Wait(recv_reqs + i, &stat);
+        MPI_Wait(send_reqs + i, &stat);
+    }    
     return new_transpose;
 }
