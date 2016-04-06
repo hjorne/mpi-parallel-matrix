@@ -27,4 +27,5 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
             }
         }
     }
+    return new_transpose;
 }
