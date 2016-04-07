@@ -16,7 +16,7 @@ void collectiveFileWrite(char* file, int num_rows, int row_length, double** matr
     int i;
     MPI_Status * s = malloc(sizeof(MPI_Status) * num_rows);
     for(i = 0; i < num_rows; i++){
-        int offset = rank * chunkSize + i * row_length * sizeof(double) + paddingBytes;
+        int offset = rank * chunkSize + i * row_length * sizeof(double) + paddingBytes*rank;
         MPI_File_write_at_all(fh, offset, matrix[i], row_length, MPI_DOUBLE, &s[i]);
     }
 }
