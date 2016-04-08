@@ -39,8 +39,7 @@ double** addMatrix(int num_ranks, int matrix_size, int num_threads, double** ori
     }
 
     pthread_t* thread_ids = malloc(sizeof(pthread_t) * (num_threads - 1));
-    int rows_per_thread = numrows/(num_threads-1);
-    
+    int rows_per_thread = numrows/(num_threads);
     for(i = 0; i<(num_threads - 1); i++)
     {
         struct addThreadArgs *args = malloc(sizeof(struct addThreadArgs));
@@ -49,14 +48,15 @@ double** addMatrix(int num_ranks, int matrix_size, int num_threads, double** ori
         args->row_start = (i+1)*rows_per_thread;
         args->num_rows = rows_per_thread;
         args->row_length = matrix_size;
-        /*int p = */pthread_create(&thread_ids[i], NULL, handleAdd, (void*)args);
+        args->added = added;
+        pthread_create(&thread_ids[i], NULL, handleAdd, (void*)args);
     }
 
     for(i = 0; i < rows_per_thread; i++)
     {
         for(j = 0; j < matrix_size; j++)
         {
-            added[i][j] = orig[i][j];
+            added[i][j] = orig[i][j] + transpose[i][j];
         }
     }
     for(i = 0; i < num_threads-1; i++){
