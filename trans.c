@@ -34,7 +34,7 @@ double** CalculateTranspose(int num_rows, int row_length, int num_threads, doubl
     int i, j, rc;
     pthread_t * thread_ids = malloc(sizeof(pthread_t) * (num_threads-1)); //Init thread id array
 
-    int rows_per_thread = num_rows/num_threads; //num_threads is adjusted by 1 since we will be reusing the parent thread
+    int rows_per_thread = num_rows/num_threads;
 
     double** transpose = (double**) malloc(row_length * sizeof(double*)); //Init first dimension of transpose
 

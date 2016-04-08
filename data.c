@@ -12,7 +12,7 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
     {
         new_transpose[i] = (double*) calloc(matrix_size, sizeof(double));
     }
-    
+
     MPI_Request* send_reqs = malloc(sizeof(MPI_Request) * numranks * numrows);
     MPI_Request* recv_reqs = malloc(sizeof(MPI_Request) * numranks * numrows);
     for(i = 0; i < numranks; i++)
@@ -27,13 +27,13 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
             }
         }
     }
-    
+
     MPI_Status stat;
-    
+
     for(i=0; i < (numranks * numrows); i++)
     {
         MPI_Wait(recv_reqs + i, &stat);
         MPI_Wait(send_reqs + i, &stat);
-    }    
+    }
     return new_transpose;
 }
