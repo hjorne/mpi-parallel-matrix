@@ -6,7 +6,9 @@
 
 void collectiveFileWrite(char* file, int num_rows, int row_length, double** matrix, int file_block_bytes, int rank){
     long long int chunkSize = (num_rows * row_length * sizeof(double));
-    int end_block_padding = chunkSize % file_block_bytes;
+    int end_block_padding = 0;
+    if(file_block_bytes > 0)
+        end_block_padding = chunkSize % file_block_bytes;
 
     MPI_File fh;
     int rc = MPI_File_open(MPI_COMM_WORLD, file, MPI_MODE_WRONLY | MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
