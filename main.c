@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 
     MATRIX_SIZE = atoi(argv[1]);
     NUM_THREADS = atoi(argv[2]);
-    PADDING_BYTES = atoi(argv[3]);
+    FILE_BLOCK_BYTES = atoi(argv[3]);
 
     MPI_Init( &argc, &argv);
     MPI_Comm_size( MPI_COMM_WORLD, &numranks);
@@ -43,7 +43,7 @@ int main(int argc, char** argv)
     //double** new_transpose = transferData(myrank, numranks, MATRIX_SIZE, mymat, transpose);
     //double** added = addMatrix(numranks, MATRIX_SIZE, NUM_THREADS, mymat, new_transpose);
 
-    collectiveFileWrite("collectiveOut",MATRIX_SIZE/numranks, MATRIX_SIZE, mymat, PADDING_BYTES, myrank);
+    collectiveFileWrite("collectiveOut",MATRIX_SIZE/numranks, MATRIX_SIZE, mymat, FILE_BLOCK_BYTES, myrank);
 
     MPI_Barrier( MPI_COMM_WORLD );
     MPI_Finalize();
