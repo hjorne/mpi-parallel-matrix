@@ -9,6 +9,7 @@ void groupFileWrite(char* file, int num_rows, int row_length, int rank, int rank
     //do something to add myrankblock to file name
 
     MPI_File fh;
+    //Might need to change communicator since MPI_File_open is collective
     MPI_File_open(MPI_COMM_WORLD, file, MPI_MODE_WRONLY | MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
     MPI_File_set_view( fh, 0, MPI_DOUBLE, MPI_DOUBLE, "native", MPI_INFO_NULL ) ;
 
