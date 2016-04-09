@@ -9,10 +9,8 @@ void groupFileWrite(char* file, int num_rows, int row_length, int rank, int rank
     char* filename = malloc(1024*sizeof(char));
     sprintf(filename, "%s_%d",file, myrankblock);
 
-    //do something to add myrankblock to file name
-
     MPI_File fh;
-    MPI_File_open(MPI_COMM_WORLD, file, MPI_MODE_WRONLY | MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
+    MPI_File_open(MPI_COMM_WORLD, filename, MPI_MODE_WRONLY | MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
     MPI_File_set_view( fh, 0, MPI_DOUBLE, MPI_DOUBLE, "native", MPI_INFO_NULL ) ;
 
     int i;
