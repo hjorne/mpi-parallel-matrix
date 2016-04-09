@@ -76,7 +76,7 @@ int main(int argc, char** argv)
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
     if(myrank == 0){
-        printf("Collective with zero padding took %lld cycles", total_cycle_time);
+        printf("Collective with 8mb padding took %lld cycles", total_cycle_time);
     }
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
     if(myrank == 0){
-        printf("Collective with zero padding took %lld cycles", total_cycle_time);
+        printf("4 Group with zero padding took %lld cycles", total_cycle_time);
     }
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
@@ -92,7 +92,7 @@ int main(int argc, char** argv)
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
     if(myrank == 0){
-        printf("Collective with zero padding took %lld cycles", total_cycle_time);
+        printf("4 Group with 8mb padding took %lld cycles", total_cycle_time);
     }
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
@@ -100,7 +100,7 @@ int main(int argc, char** argv)
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
     if(myrank == 0){
-        printf("Collective with zero padding took %lld cycles", total_cycle_time);
+        printf("8 Group with zero padding took %lld cycles", total_cycle_time);
     }
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
@@ -108,7 +108,7 @@ int main(int argc, char** argv)
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
     if(myrank == 0){
-        printf("Collective with zero padding took %lld cycles", total_cycle_time);
+        printf("8 Group with 8mb padding took %lld cycles", total_cycle_time);
     }
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
@@ -116,7 +116,7 @@ int main(int argc, char** argv)
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
     if(myrank == 0){
-        printf("Collective with zero padding took %lld cycles", total_cycle_time);
+        printf("32 Group with zero padding took %lld cycles", total_cycle_time);
     }
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
@@ -124,7 +124,7 @@ int main(int argc, char** argv)
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
     if(myrank == 0){
-        printf("Collective with zero padding took %lld cycles", total_cycle_time);
+        printf("32 Group with 8mb padding took %lld cycles", total_cycle_time);
     }
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
