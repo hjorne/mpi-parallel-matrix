@@ -5,6 +5,9 @@
 
 void groupFileWrite(char* file, int num_rows, int row_length, int rank, int ranksPerFile, int file_block_bytes, double** matrix){
     int myrankblock = rank/ranksPerFile;
+    
+    char* filename = malloc(1024*sizeof(char));
+    sprintf(filename, "%s_%d",file, myrankblock);
 
     //do something to add myrankblock to file name
 
