@@ -52,7 +52,7 @@ int main(int argc, char** argv)
     double** added = addMatrix(numranks, MATRIX_SIZE, NUM_THREADS, mymat, new_transpose);
     //end_cycle_time = GetTimeBase();
     //total_cycle_time = end_cycle_time - start_cycle_time;
-    //MPI_Barrier( MPI_COMM_WORLD );
+    MPI_Barrier( MPI_COMM_WORLD );
     //if(myrank == 0){
     //    printf("Calculations took %lld cycles", total_cycle_time);
     //}
