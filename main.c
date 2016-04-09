@@ -80,7 +80,7 @@ int main(int argc, char** argv)
     }
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut4r0p", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 4, 0, added);
+    groupFileWrite("groupOut", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 4, 0, added);
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
     if(myrank == 0){
@@ -88,7 +88,7 @@ int main(int argc, char** argv)
     }
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut4r8p", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 4, FILE_BLOCK_BYTES, added);
+    groupFileWrite("groupOut", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 4, FILE_BLOCK_BYTES, added);
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
     if(myrank == 0){
@@ -96,7 +96,7 @@ int main(int argc, char** argv)
     }
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut8r0p", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 8, 0, added);
+    groupFileWrite("groupOut", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 8, 0, added);
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
     if(myrank == 0){
@@ -104,7 +104,7 @@ int main(int argc, char** argv)
     }
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut8r8p", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 8, FILE_BLOCK_BYTES, added);
+    groupFileWrite("groupOut", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 8, FILE_BLOCK_BYTES, added);
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
     if(myrank == 0){
@@ -112,7 +112,7 @@ int main(int argc, char** argv)
     }
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut32r0p", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 32, 0, added);
+    groupFileWrite("groupOut", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 32, 0, added);
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
     if(myrank == 0){
@@ -120,7 +120,7 @@ int main(int argc, char** argv)
     }
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut32r8p", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 32, FILE_BLOCK_BYTES, added);
+    groupFileWrite("groupOut", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 32, FILE_BLOCK_BYTES, added);
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
     if(myrank == 0){
