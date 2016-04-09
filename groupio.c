@@ -1,16 +1,23 @@
 #include <stdlib.h>
 #include <mpi.h>
+#include <string.h>
+#include <stdio.h>
 
 #include "groupio.h"
 
 void groupFileWrite(char* file, int num_rows, int row_length, int rank, int ranksPerFile, int file_block_bytes, double** matrix){
-    int myrankblock = rank/ranksPerFile;
+    int myrankblock = rank / ranksPerFile;
+    int newrank = rank % ranksPerFile;
 
-    //do something to add myrankblock to file name
+    char* filename = malloc(1024*sizeof(char));
+    sprintf(filename, "%s_%d",file, myrankblock);
+
+    MPI_Comm filegroup;
+    MPI_Comm_Split(MPI_COMM_WORLD, myrankblock, newrank, filegroup);
 
     MPI_File fh;
-    //Might need to change communicator since MPI_File_open is collective
-    MPI_File_open(MPI_COMM_WORLD, file, MPI_MODE_WRONLY | MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
+    MPI_File_open(filegroup, filename, MPI_MODE_WRONLY | MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
+
     MPI_File_set_view( fh, 0, MPI_DOUBLE, MPI_DOUBLE, "native", MPI_INFO_NULL ) ;
 
     int i;
