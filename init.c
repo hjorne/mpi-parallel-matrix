@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "init.h"
+#include "clcg4.h"
 
 int RandSeed(int myrank)
 {
