@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
-//#include<hwi/include/bqc/A2_inlines.h>
+#include<hwi/include/bqc/A2_inlines.h>
 #include "clcg4.h"
 #include "init.h"
 #include "trans.h"
@@ -126,8 +126,6 @@ int main(int argc, char** argv)
     if(myrank == 0){
         printf("32 Group with 8mb padding took %lld cycles", total_cycle_time);
     }
-    MPI_Barrier( MPI_COMM_WORLD );
-    start_cycle_time = GetTimeBase();
 
     MPI_Barrier( MPI_COMM_WORLD );
     MPI_Finalize();
