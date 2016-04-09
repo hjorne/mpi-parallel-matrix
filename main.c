@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
-#include<hwi/include/bqc/A2_inlines.h>
+#include <math.h>
+#include <hwi/include/bqc/A2_inlines.h>
 #include "clcg4.h"
 #include "init.h"
 #include "trans.h"
@@ -11,12 +12,13 @@
 #include "dealloc.h"
 #include "groupio.h"
 
-void printMatrix(double** matrix, int num_rows, int row_length){
-    int i,j;
+void printMatrix(double** matrix, int num_rows, int row_length)
+{
+    int i, j;
     printf("\n\n====\n\n");
-    for(i = 0; i < num_rows; i++){
-        for(j = 0; j < row_length; j++){
-            printf("%f ",matrix[i][j]);
+    for(i = 0; i < num_rows; i++) {
+        for(j = 0; j < row_length; j++) {
+            printf("%f ", matrix[i][j]);
         }
         printf("\n");
     }
@@ -28,7 +30,7 @@ void printMatrix(double** matrix, int num_rows, int row_length){
 //Usage mpirun -np numranks ./execname <matrix size> <number of threads per rank> <block size>
 int main(int argc, char** argv)
 {
-    if(argc != 3){
+    if(argc != 3) {
         printf("Invalid number of args!\n");
         printf("Usage: mpirun -np numranks ./execname <matrix size> <number of threads per rank>\n");
         exit(1);
@@ -37,6 +39,8 @@ int main(int argc, char** argv)
     unsigned long long start_cycle_time;
     unsigned long long end_cycle_time;
     unsigned long long total_cycle_time;
+    unsigned long long global_runtime = GetTimeBase();
+    double time_taken;
 
     int myrank, numranks, MATRIX_SIZE, NUM_THREADS;
 
@@ -49,85 +53,142 @@ int main(int argc, char** argv)
     MPI_Comm_rank( MPI_COMM_WORLD, &myrank);
     InitDefault();  // clcg4 initialization
 
+    MPI_Barrier( MPI_COMM_WORLD );
+
     start_cycle_time = GetTimeBase();
+    printf("Rank %i: Initialization started\n", myrank);
     double** mymat = InitMyMatrix(myrank, numranks, MATRIX_SIZE);
-    double** transpose = CalculateTranspose(MATRIX_SIZE/numranks, MATRIX_SIZE, NUM_THREADS, mymat);
+    printf("Rank %i: Initialization complete\n");
+
+    printf("Rank %i: Transpose started\n", myrank);
+    double** transpose = CalculateTranspose(MATRIX_SIZE / numranks, MATRIX_SIZE, NUM_THREADS, mymat);
+    printf("Rank %i: Transpose complete\n", myrank);
+
+    printf("Rank %i: Transfer started\n", myrank);
     double** new_transpose = transferData(myrank, numranks, MATRIX_SIZE, mymat, transpose);
+    printf("Rank %i: Transfer complete\n", myrank);
+
+    printf("Rank %i: Deallocation started\n", myrank);
     deallocMatrix(transpose, MATRIX_SIZE);
+    printf("Rank %i: Deallocation complete\n", myrank);
+
+    printf("Rank %i: Matrix addition started\n", myrank);
     double** added = addMatrix(numranks, MATRIX_SIZE, NUM_THREADS, mymat, new_transpose);
+    printf("Rank %i: Matrix addition complete\n", myrank);
+
+    MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
-    MPI_Barrier( MPI_COMM_WORLD );
-    if(myrank == 0){
-        printf("Calculations took %lld cycles\n", total_cycle_time);
+    time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
+    if(myrank == 0) {
+        printf("Calculations took %f seconds\n", time_taken);
     }
 
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    collectiveFileWrite("collectiveOut",MATRIX_SIZE/numranks, MATRIX_SIZE, added, 0, myrank);
+    collectiveFileWrite("collectiveOut", MATRIX_SIZE / numranks, MATRIX_SIZE, added, 0, myrank);
+    MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
-    if(myrank == 0){
-        printf("Collective with zero padding took %lld cycles\n", total_cycle_time);
+    time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
+    if(myrank == 0) {
+        printf("Collective with zero padding took %f seconds\n", time_taken);
     }
+
+
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    collectiveFileWrite("collectiveOut",MATRIX_SIZE/numranks, MATRIX_SIZE, added, FILE_BLOCK_BYTES, myrank);
+    collectiveFileWrite("collectiveOut", MATRIX_SIZE / numranks, MATRIX_SIZE, added, FILE_BLOCK_BYTES,
+                        myrank);
+    MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
-    if(myrank == 0){
-        printf("Collective with 8mb padding took %lld cycles\n", total_cycle_time);
+    time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
+    if(myrank == 0) {
+        printf("Collective with 8mb padding took %f seconds\n", time_taken);
     }
+
+
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 4, 0, added);
+    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 4, 0, added);
+    MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
-    if(myrank == 0){
-        printf("4 Group with zero padding took %lld cycles\n", total_cycle_time);
+    time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
+    if(myrank == 0) {
+        printf("4 Group with zero padding took %f seconds\n", time_taken);
     }
+
+
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 4, FILE_BLOCK_BYTES, added);
+    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 4, FILE_BLOCK_BYTES, added);
+    MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
-    if(myrank == 0){
-        printf("4 Group with 8mb padding took %lld cycles\n", total_cycle_time);
+    time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
+    if(myrank == 0) {
+        printf("4 Group with 8mb padding took %f seconds\n", time_taken);
     }
+
+
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 8, 0, added);
+    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 8, 0, added);
+    MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
-    if(myrank == 0){
-        printf("8 Group with zero padding took %lld cycles\n", total_cycle_time);
+    time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
+    if(myrank == 0) {
+        printf("8 Group with zero padding took %f seconds\n", time_taken);
     }
+
+
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 8, FILE_BLOCK_BYTES, added);
+    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 8, FILE_BLOCK_BYTES, added);
+    MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
-    if(myrank == 0){
-        printf("8 Group with 8mb padding took %lld cycles\n", total_cycle_time);
+    time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
+    if(myrank == 0) {
+        printf("8 Group with 8mb padding took %f seconds\n", time_taken);
     }
+
+
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 32, 0, added);
+    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 32, 0, added);
+    MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
-    if(myrank == 0){
-        printf("32 Group with zero padding took %lld cycles\n", total_cycle_time);
+    time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
+    if(myrank == 0) {
+        printf("32 Group with zero padding took %f seconds\n", time_taken);
     }
+
+
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 32, FILE_BLOCK_BYTES, added);
+    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 32, FILE_BLOCK_BYTES,
+                   added);
+    MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
-    if(myrank == 0){
-        printf("32 Group with 8mb padding took %lld cycles\n", total_cycle_time);
+    time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
+    if(myrank == 0) {
+        printf("32 Group with 8mb padding took %f seconds\n", time_taken);
     }
 
     MPI_Barrier( MPI_COMM_WORLD );
+    end_cycle_time = GetTimeBase();
+    total_cycle_time = end_cycle_time - global_runtime;
+    time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
+
+    if(myrank == 0) {
+        printf("All operations took %f seconds\n", time_taken);
+    }
     MPI_Finalize();
     return 0;
 }
