@@ -11,7 +11,7 @@ void collectiveFileWrite(char* file, int num_rows, int row_length, double** matr
         end_block_padding = chunkSize % file_block_bytes; //Padding based on the remaining bytes left after placing the chunk into blocks
 
     MPI_File fh;
-    int rc = MPI_File_open(MPI_COMM_WORLD, file, MPI_MODE_WRONLY | MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
+    MPI_File_open(MPI_COMM_WORLD, file, MPI_MODE_WRONLY | MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
     MPI_File_set_view( fh, 0, MPI_DOUBLE, MPI_DOUBLE, "native", MPI_INFO_NULL ) ;
 
     //int MPI_File_write_at_all(MPI_File fh, MPI_Offset offset, const void  *buf, int count, MPI_Datatype datatype, MPI_Status *status)

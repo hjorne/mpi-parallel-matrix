@@ -18,16 +18,16 @@ void printMatrix(double** matrix, int num_rows, int row_length){
     }
 }
 
-//Usage mpirun -np numranks ./execname <matrix size> <number of threads per rank> <padding bytes>
+//Usage mpirun -np numranks ./execname <matrix size> <number of threads per rank> <block size>
 int main(int argc, char** argv)
 {
     if(argc != 4){
         printf("Invalid number of args!\n");
-        printf("Usage: mpirun -np numranks ./execname <matrix size> <number of threads per rank> <padding bytes>\n");
+        printf("Usage: mpirun -np numranks ./execname <matrix size> <number of threads per rank> <block size>\n");
         exit(1);
     }
 
-    int myrank, numranks, seed, MATRIX_SIZE, NUM_THREADS, FILE_BLOCK_BYTES;
+    int myrank, numranks, MATRIX_SIZE, NUM_THREADS, FILE_BLOCK_BYTES;
 
     MATRIX_SIZE = atoi(argv[1]);
     NUM_THREADS = atoi(argv[2]);
@@ -42,7 +42,8 @@ int main(int argc, char** argv)
     double** transpose = CalculateTranspose(MATRIX_SIZE/numranks, MATRIX_SIZE, NUM_THREADS, mymat);
     double** new_transpose = transferData(myrank, numranks, MATRIX_SIZE, mymat, transpose);
     double** added = addMatrix(numranks, MATRIX_SIZE, NUM_THREADS, mymat, new_transpose);
-    collectiveFileWrite("collectiveOut",MATRIX_SIZE/numranks, MATRIX_SIZE, mymat, FILE_BLOCK_BYTES, myrank);
+
+    collectiveFileWrite("collectiveOut",MATRIX_SIZE/numranks, MATRIX_SIZE, added, FILE_BLOCK_BYTES, myrank);
 
     MPI_Barrier( MPI_COMM_WORLD );
     MPI_Finalize();
