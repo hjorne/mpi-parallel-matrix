@@ -9,6 +9,7 @@
 #include "add.h"
 #include "collective.h"
 #include "dealloc.h"
+#include "groupio.h"
 
 void printMatrix(double** matrix, int num_rows, int row_length){
     int i,j;
@@ -61,7 +62,8 @@ int main(int argc, char** argv)
 
     //MPI_Barrier( MPI_COMM_WORLD );
     //start_cycle_time = GetTimeBase();
-    collectiveFileWrite("collectiveOut",MATRIX_SIZE/numranks, MATRIX_SIZE, added, FILE_BLOCK_BYTES, myrank);
+    //collectiveFileWrite("collectiveOut",MATRIX_SIZE/numranks, MATRIX_SIZE, added, FILE_BLOCK_BYTES, myrank);
+    groupFileWrite("groupOut", MATRIX_SIZE/numranks, MATRIX_SIZE, myrank, 2, FILE_BLOCK_BYTES, added);
     //end_cycle_time = GetTimeBase();
     //total_cycle_time = end_cycle_time - start_cycle_time;
     //if(myrank == 0){

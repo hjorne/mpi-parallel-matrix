@@ -13,7 +13,7 @@ void groupFileWrite(char* file, int num_rows, int row_length, int rank, int rank
 
     int myrankblock = rank / ranksPerFile;
     int newrank = rank % ranksPerFile;
-    
+
     char* filename = malloc(1024*sizeof(char));
     sprintf(filename, "%s_%d",file, myrankblock);
 
@@ -22,6 +22,7 @@ void groupFileWrite(char* file, int num_rows, int row_length, int rank, int rank
     
     MPI_File fh;
     MPI_File_open(filegroup, filename, MPI_MODE_WRONLY | MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
+
     MPI_File_set_view( fh, 0, MPI_DOUBLE, MPI_DOUBLE, "native", MPI_INFO_NULL ) ;
 
     int i;
