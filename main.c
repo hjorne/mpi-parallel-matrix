@@ -18,12 +18,12 @@ void printMatrix(double** matrix, int num_rows, int row_length){
     }
 }
 
-//Usage mpirun -np numranks ./execname <matrix size> <number of threads per rank> <padding bytes>
+//Usage mpirun -np numranks ./execname <matrix size> <number of threads per rank> <block size>
 int main(int argc, char** argv)
 {
     if(argc != 4){
         printf("Invalid number of args!\n");
-        printf("Usage: mpirun -np numranks ./execname <matrix size> <number of threads per rank> <padding bytes>\n");
+        printf("Usage: mpirun -np numranks ./execname <matrix size> <number of threads per rank> <block size>\n");
         exit(1);
     }
 
