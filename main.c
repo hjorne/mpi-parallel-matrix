@@ -27,7 +27,7 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-    int myrank, numranks, seed, MATRIX_SIZE, NUM_THREADS, PADDING_BYTES;
+    int myrank, numranks, seed, MATRIX_SIZE, NUM_THREADS, FILE_BLOCK_BYTES;
 
     MATRIX_SIZE = atoi(argv[1]);
     NUM_THREADS = atoi(argv[2]);
@@ -40,9 +40,8 @@ int main(int argc, char** argv)
 
     double** mymat = InitMyMatrix(myrank, numranks, MATRIX_SIZE);
     double** transpose = CalculateTranspose(MATRIX_SIZE/numranks, MATRIX_SIZE, NUM_THREADS, mymat);
-    //double** new_transpose = transferData(myrank, numranks, MATRIX_SIZE, mymat, transpose);
+    double** new_transpose = transferData(myrank, numranks, MATRIX_SIZE, mymat, transpose);
     //double** added = addMatrix(numranks, MATRIX_SIZE, NUM_THREADS, mymat, new_transpose);
-
     collectiveFileWrite("collectiveOut",MATRIX_SIZE/numranks, MATRIX_SIZE, mymat, FILE_BLOCK_BYTES, myrank);
 
     MPI_Barrier( MPI_COMM_WORLD );
