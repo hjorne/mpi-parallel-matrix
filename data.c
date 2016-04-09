@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <mpi.h>
+#include <string.h>
 
 #include "data.h"
 
@@ -26,6 +27,14 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
                 MPI_Irecv(&(new_transpose[j][i * numrows]), numrows, MPI_DOUBLE, i, j, MPI_COMM_WORLD, &recv_reqs[i * numrows + j]);
             }
         }
+        else
+        {
+            int j;
+            for(j = 0; j < numrows; j++)
+            {
+                memcpy(&(new_transpose[j][i * numrows]), transpose[(i * numrows) + j], numrows*sizeof(double));
+            }
+        }
     }
 
     MPI_Status stat;
@@ -42,5 +51,7 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
             }
         }
     }
+
+    
     return new_transpose;
 }
