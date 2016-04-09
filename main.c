@@ -8,6 +8,7 @@
 #include "data.h"
 #include "add.h"
 #include "collective.h"
+#include "dealloc.h"
 #include "groupio.h"
 
 void printMatrix(double** matrix, int num_rows, int row_length){
@@ -52,6 +53,7 @@ int main(int argc, char** argv)
     double** mymat = InitMyMatrix(myrank, numranks, MATRIX_SIZE);
     double** transpose = CalculateTranspose(MATRIX_SIZE/numranks, MATRIX_SIZE, NUM_THREADS, mymat);
     double** new_transpose = transferData(myrank, numranks, MATRIX_SIZE, mymat, transpose);
+    deallocMatrix(transpose, MATRIX_SIZE);
     double** added = addMatrix(numranks, MATRIX_SIZE, NUM_THREADS, mymat, new_transpose);
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
