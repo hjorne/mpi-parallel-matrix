@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <mpi.h>
 #include <math.h>
-#include <hwi/include/bqc/A2_inlines.h>
+//#include <hwi/include/bqc/A2_inlines.h>
 #include "clcg4.h"
 #include "init.h"
 #include "trans.h"
@@ -36,11 +36,11 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-    unsigned long long start_cycle_time;
+    /* unsigned long long start_cycle_time;
     unsigned long long end_cycle_time;
     unsigned long long total_cycle_time;
     unsigned long long global_runtime = GetTimeBase();
-    double time_taken;
+    double time_taken;*/
 
     int myrank, numranks, MATRIX_SIZE, NUM_THREADS;
 
@@ -55,10 +55,10 @@ int main(int argc, char** argv)
 
     MPI_Barrier( MPI_COMM_WORLD );
 
-    start_cycle_time = GetTimeBase();
+    //start_cycle_time = GetTimeBase();
     printf("Rank %i: Initialization started\n", myrank);
     double** mymat = InitMyMatrix(myrank, numranks, MATRIX_SIZE);
-    printf("Rank %i: Initialization complete\n");
+    printf("Rank %i: Initialization complete\n", myrank);
 
     printf("Rank %i: Transpose started\n", myrank);
     double** transpose = CalculateTranspose(MATRIX_SIZE / numranks, MATRIX_SIZE, NUM_THREADS, mymat);
@@ -77,7 +77,7 @@ int main(int argc, char** argv)
     printf("Rank %i: Matrix addition complete\n", myrank);
 
     MPI_Barrier( MPI_COMM_WORLD );
-    end_cycle_time = GetTimeBase();
+    /*end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
     time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
     if(myrank == 0) {
@@ -188,7 +188,7 @@ int main(int argc, char** argv)
 
     if(myrank == 0) {
         printf("All operations took %f seconds\n", time_taken);
-    }
+        }*/
     MPI_Finalize();
     return 0;
 }
