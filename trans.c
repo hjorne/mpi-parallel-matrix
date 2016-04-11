@@ -74,5 +74,8 @@ double** CalculateTranspose(int num_rows, int row_length, int num_threads, doubl
             //Thread failed
         }
     }
+
+    free(thread_ids);
+
     return transpose;
 }
