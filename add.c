@@ -19,7 +19,9 @@ void* handleAdd(void* arg)
     int i, j;
     for(i = args->row_start; i < args->row_start + args->num_rows; i++) {
         for(j = 0; j < args->row_length; j++) {
-            args->added[i][j] = args->orig[i][j] + args->transpose[i][j];
+            args->added[i][j] = args->orig[i][j] + 
+                args->transpose[(args->num_rows * (j / args->num_rows)) + i][j % args->num_rows];
+            //args->added[i][j] = args->orig[i][j] + args->transpose[i][j];
         }
     }
     pthread_exit(0);
