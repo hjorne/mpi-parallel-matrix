@@ -26,6 +26,7 @@ void * handleCopy(void * arg) {
             transpose[j][i] = orig_matrix[i][j];
         }
     }
+    free(arg);
     pthread_exit(0);
 }
 //A(i,j) = At(j,i)
@@ -67,5 +68,6 @@ double** CalculateTranspose(int num_rows, int row_length, int num_threads, doubl
             //Thread failed
         }
     }
+    free(thread_ids);
     return transpose;
 }
