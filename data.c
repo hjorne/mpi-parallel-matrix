@@ -24,6 +24,7 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
             for(j = 0; j < numrows; j++) {
                 MPI_Isend(transpose[(i * numrows) + j], numrows, MPI_DOUBLE, i, j, MPI_COMM_WORLD,
                           &send_reqs[i * numrows + j]);
+                free(transpose[(i * numrows) + j]);
                 MPI_Irecv(&(new_transpose[j][i * numrows]), numrows, MPI_DOUBLE, i, j, MPI_COMM_WORLD,
                           &recv_reqs[i * numrows + j]);
             }
@@ -33,10 +34,12 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
             printf("Rank %d: copying own\n", my_rank);
             for(j = 0; j < numrows; j++) {
                 memcpy(&(new_transpose[j][i * numrows]), transpose[(i * numrows) + j], numrows * sizeof(double));
+                free(transpose[i * numrows + j]);
             }
             printf("Rank %d: done copying own\n", my_rank);
         }
     }
+    free(transpose);
 
     MPI_Status stat;
 

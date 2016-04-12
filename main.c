@@ -68,9 +68,9 @@ int main(int argc, char** argv)
     double** new_transpose = transferData(myrank, numranks, MATRIX_SIZE, mymat, transpose);
     printf("Rank %i: Transfer complete\n", myrank);
 
-    printf("Rank %i: Deallocation started\n", myrank);
-    deallocMatrix(transpose, MATRIX_SIZE);
-    printf("Rank %i: Deallocation complete\n", myrank);
+    //printf("Rank %i: Deallocation started\n", myrank);
+    //deallocMatrix(transpose, MATRIX_SIZE);
+    //printf("Rank %i: Deallocation complete\n", myrank);
 
     printf("Rank %i: Matrix addition started\n", myrank);
     double** added = addMatrix(numranks, MATRIX_SIZE, NUM_THREADS, mymat, new_transpose);
