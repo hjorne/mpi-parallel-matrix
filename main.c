@@ -69,7 +69,7 @@ int main(int argc, char** argv)
     printf("Rank %i: Transfer complete\n", myrank);
 
     printf("Rank %i: Deallocation started\n", myrank);
-    deallocMatrix(transpose, MATRIX_SIZE, MATRIX_SIZE / numranks);
+    deallocMatrix(transpose, MATRIX_SIZE);
     printf("Rank %i: Deallocation complete\n", myrank);
 
     printf("Rank %i: Matrix addition started\n", myrank);

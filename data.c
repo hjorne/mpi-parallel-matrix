@@ -15,6 +15,7 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
 
     MPI_Request* send_reqs = malloc(sizeof(MPI_Request) * numranks * numrows);
     MPI_Request* recv_reqs = malloc(sizeof(MPI_Request) * numranks * numrows);
+    MPI_Status* status_p = malloc(sizeof(MPI_Status) * 128);
     for(i = 0; i < numranks; i++) {
         if(i != my_rank) {
             int j;
@@ -24,7 +25,7 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
                 MPI_Isend(transpose[(i * numrows) + j], numrows, MPI_DOUBLE, i, j, MPI_COMM_WORLD,
                           &send_reqs[i * numrows + j]);
                   if(j % 128 == 0){
-                      MPI_Waitall(128, (send_reqs + (i*numrows)));
+                      MPI_Waitall(128, (send_reqs + (i*numrows)),status_p);
                   }
             }
         }
@@ -36,7 +37,7 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
         }
     }
 
-    /*
+
     MPI_Status stat;
 
     for(i = 0; i < numranks; i++) {
@@ -48,7 +49,7 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
             }
         }
     }
-    */
+
 
 
     return new_transpose;

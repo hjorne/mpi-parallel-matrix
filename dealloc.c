@@ -1,13 +1,10 @@
 #include <stdlib.h>
 #include "dealloc.h"
 
-void deallocMatrix(double** mat, int rows, int cols)
+void deallocMatrix(double** mat, int rows)
 {
-    int i,j;
+    int i;
     for(i = 0; i < rows; i++) {
-        for(j = 0; j < cols; j++){
-            free(mat[i][j]);
-        }
         free(mat[i]);
     }
     free(mat);
