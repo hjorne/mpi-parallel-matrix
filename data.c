@@ -59,7 +59,7 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
             }*/
     }
 
-
+    /*
     MPI_Status stat;
 
     for(i = 0; i < numranks; i++) {
@@ -70,7 +70,7 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
                 MPI_Wait(&send_reqs[i * numrows + j], &stat);
             }
         }
-    }
+        }*/
 
 
 
