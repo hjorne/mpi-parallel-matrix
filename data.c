@@ -37,42 +37,9 @@ double** transferData(int my_rank, int numranks, int matrix_size, double** orig,
             if(j % 128 == 127 || j == numrows - 1){
                 //printf("rank %d, i %d, comm_mat %d, j %d, jmod %d\n", my_rank, i, comm_mat, j, j%128);
                 MPI_Waitall(j % 128, &(send_reqs[comm_mat_send * numrows + (j - (j % 128))]), status_p);
+                MPI_Waitall(j % 128, &(recv_reqs[comm_mat_recv * numrows + (j - (j % 128))]), status_p);
             }
         }
-        /*if(i != my_rank) {
-            int j;
-            for(j = 0; j < numrows; j++) {
-                MPI_Irecv(&(new_transpose[j][i * numrows]), numrows, MPI_DOUBLE, i, j, MPI_COMM_WORLD,
-                          &recv_reqs[i * numrows + j]);
-                MPI_Isend(transpose[(i * numrows) + j], numrows, MPI_DOUBLE, i, j, MPI_COMM_WORLD,
-                          &send_reqs[i * numrows + j]);
-                  if(j % 128 == 0){
-                      MPI_Waitall(128, (send_reqs + (i*numrows)),status_p);
-                  }
-            }
-        }
-        else {
-            int j;
-            for(j = 0; j < numrows; j++) {
-                memcpy(&(new_transpose[j][i * numrows]), transpose[(i * numrows) + j], numrows * sizeof(double));
-            }
-            }*/
     }
-
-    /*
-    MPI_Status stat;
-
-    for(i = 0; i < numranks; i++) {
-        if(i != my_rank) {
-            int j;
-            for(j = 0; j < numrows; j++) {
-                MPI_Wait(&recv_reqs[i * numrows + j], &stat);
-                MPI_Wait(&send_reqs[i * numrows + j], &stat);
-            }
-        }
-        }*/
-
-
-
     return new_transpose;
 }
