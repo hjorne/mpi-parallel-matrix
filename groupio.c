@@ -6,7 +6,7 @@
 #include "groupio.h"
 
 void groupFileWrite(char* file, int num_rows, int row_length, int rank, int ranksPerFile,
-                    int file_block_bytes, double** matrix)
+                    int file_block_bytes, double* matrix)
 {
     long long int chunkSize = (num_rows * row_length * sizeof(double));
     int end_block_padding = 0;

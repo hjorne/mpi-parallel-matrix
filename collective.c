@@ -3,7 +3,7 @@
 
 #include "collective.h"
 
-void collectiveFileWrite(char* file, int num_rows, int row_length, double** matrix,
+void collectiveFileWrite(char* file, int num_rows, int row_length, double* matrix,
                          int file_block_bytes, int rank)
 {
     long long int chunkSize = (num_rows * row_length * sizeof(
