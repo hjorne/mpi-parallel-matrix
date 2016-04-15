@@ -8,10 +8,12 @@ void collectiveFileWrite(char* file, int num_rows, int row_length, double* matri
 {
     long long int chunkSize = (num_rows * row_length * sizeof(
                                    double)); //Total size of the data written by each rank
+                                   /*
     int end_block_padding = 0;
     if(file_block_bytes > 0)
         end_block_padding = chunkSize %
                             file_block_bytes; //Padding based on the remaining bytes left after placing the chunk into blocks
+    */
 
     MPI_File fh;
     MPI_File_open(MPI_COMM_WORLD, file, MPI_MODE_WRONLY | MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
@@ -21,6 +23,7 @@ void collectiveFileWrite(char* file, int num_rows, int row_length, double* matri
     int i;
     MPI_Status* s;
     //Calculate each offset based on: The base rank chunk offset and the padding for each rank
-    int offset = (rank * chunkSize)  + end_block_padding * rank;
-    MPI_File_write_at_all(fh, offset, matrix, row_length * num_rows, MPI_DOUBLE, &s);
+    int offset = (rank * chunkSize);  //+ end_block_padding * rank;
+    MPI_File_write_at_all(fh, offset, matrix, row_length * num_rows, MPI_DOUBLE, s);
+    MPI_File_close(&fh);
 }

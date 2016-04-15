@@ -30,5 +30,10 @@ void groupFileWrite(char* file, int num_rows, int row_length, int rank, int rank
     int i;
     MPI_Status* s;
     int offset = (newrank * chunkSize)  + end_block_padding * rank;
-    MPI_File_write_at(fh, offset, matrix, row_length * num_rows, MPI_DOUBLE, &s);
+    MPI_File_write_at(fh, offset, matrix, row_length * num_rows, MPI_DOUBLE, s);
+    MPI_File_close(&fh);
+    MPI_Barrier(filegroup);
+    if(newrank == 0){
+        MPI_File_delete(filename,MPI_INFO_NULL)
+    }
 }
