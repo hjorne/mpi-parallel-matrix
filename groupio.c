@@ -28,10 +28,7 @@ void groupFileWrite(char* file, int num_rows, int row_length, int rank, int rank
     MPI_File_set_view( fh, 0, MPI_DOUBLE, MPI_DOUBLE, "native", MPI_INFO_NULL ) ;
 
     int i;
-    MPI_Status* s = malloc(sizeof(MPI_Status) * num_rows);
-    for(i = 0; i < num_rows; i++) {
-        //Change offset calculation
-        int offset = (newrank * chunkSize) + (i * row_length * sizeof(double)) + end_block_padding * rank;
-        MPI_File_write_at(fh, offset, matrix[i], row_length, MPI_DOUBLE, &s[i]);
-    }
+    MPI_Status* s;
+    int offset = (newrank * chunkSize)  + end_block_padding * rank;
+    MPI_File_write_at(fh, offset, matrix, row_length * num_rows, MPI_DOUBLE, &s);
 }
