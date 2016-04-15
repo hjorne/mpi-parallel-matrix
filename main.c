@@ -27,10 +27,10 @@ void printMatrix(double** matrix, int num_rows, int row_length)
 }
 
 double * allocateContiguous(double** orig, int num_rows, int row_length){
-    double * contig = malloc(sizeof(double) * num_rows * row_length)
+    double * contig = malloc(sizeof(double) * num_rows * row_length);
     int i;
     for(i = 0; i < num_rows; i++){
-        memcpy(contig[i * num_rows * row_length], orig[i], sizeof(double) * row_length);
+        memcpy(&contig[i * row_length], orig[i], sizeof(double) * row_length);
     }
     return contig;
 }
@@ -87,7 +87,7 @@ int main(int argc, char** argv)
     printf("Rank %i: Matrix addition complete\n", myrank);
 
     printf("Rank %i: Contiguous allocation started\n", myrank);
-    double* added_contig = allocateContiguous(added,MATRIX_SIZE / numranks, MATRIX_SIZE)
+    double* added_contig = allocateContiguous(added,MATRIX_SIZE / numranks, MATRIX_SIZE);
     printf("Rank %i: Contiguous allocation finished\n", myrank);
 
     MPI_Barrier( MPI_COMM_WORLD );
@@ -109,20 +109,6 @@ int main(int argc, char** argv)
         printf("Collective with zero padding took %f seconds\n", time_taken);
     }
 
-
-    MPI_Barrier( MPI_COMM_WORLD );
-    start_cycle_time = GetTimeBase();
-    collectiveFileWrite("collectiveOut", MATRIX_SIZE / numranks, MATRIX_SIZE, added_contig, FILE_BLOCK_BYTES,
-                        myrank);
-    MPI_Barrier( MPI_COMM_WORLD );
-    end_cycle_time = GetTimeBase();
-    total_cycle_time = end_cycle_time - start_cycle_time;
-    time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
-    if(myrank == 0) {
-        printf("Collective with 8mb padding took %f seconds\n", time_taken);
-    }
-
-
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
     groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 4, 0, added_contig);
@@ -133,19 +119,6 @@ int main(int argc, char** argv)
     if(myrank == 0) {
         printf("4 Group with zero padding took %f seconds\n", time_taken);
     }
-
-
-    MPI_Barrier( MPI_COMM_WORLD );
-    start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 4, FILE_BLOCK_BYTES, added_contig);
-    MPI_Barrier( MPI_COMM_WORLD );
-    end_cycle_time = GetTimeBase();
-    total_cycle_time = end_cycle_time - start_cycle_time;
-    time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
-    if(myrank == 0) {
-        printf("4 Group with 8mb padding took %f seconds\n", time_taken);
-    }
-
 
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
@@ -158,19 +131,6 @@ int main(int argc, char** argv)
         printf("8 Group with zero padding took %f seconds\n", time_taken);
     }
 
-
-    MPI_Barrier( MPI_COMM_WORLD );
-    start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 8, FILE_BLOCK_BYTES, added_contig);
-    MPI_Barrier( MPI_COMM_WORLD );
-    end_cycle_time = GetTimeBase();
-    total_cycle_time = end_cycle_time - start_cycle_time;
-    time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
-    if(myrank == 0) {
-        printf("8 Group with 8mb padding took %f seconds\n", time_taken);
-    }
-
-
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
     groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 32, 0, added_contig);
@@ -180,19 +140,6 @@ int main(int argc, char** argv)
     time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
     if(myrank == 0) {
         printf("32 Group with zero padding took %f seconds\n", time_taken);
-    }
-
-
-    MPI_Barrier( MPI_COMM_WORLD );
-    start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 32, FILE_BLOCK_BYTES,
-                   added_contig);
-    MPI_Barrier( MPI_COMM_WORLD );
-    end_cycle_time = GetTimeBase();
-    total_cycle_time = end_cycle_time - start_cycle_time;
-    time_taken = (double)total_cycle_time / (1.6 * pow(10.0, 9));
-    if(myrank == 0) {
-        printf("32 Group with 8mb padding took %f seconds\n", time_taken);
     }
 
     MPI_Barrier( MPI_COMM_WORLD );
