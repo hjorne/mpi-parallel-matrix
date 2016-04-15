@@ -78,9 +78,9 @@ int main(int argc, char** argv)
     double** new_transpose = transferData(myrank, numranks, MATRIX_SIZE, mymat, transpose);
     printf("Rank %i: Transfer complete\n", myrank);
 
-    printf("Rank %i: Deallocation started\n", myrank);
-    deallocMatrix(mymat, MATRIX_SIZE / numranks);
-    printf("Rank %i: Deallocation complete\n", myrank);
+    //printf("Rank %i: Deallocation started\n", myrank);
+    //deallocMatrix(mymat, MATRIX_SIZE / numranks);
+    //printf("Rank %i: Deallocation complete\n", myrank);
 
     printf("Rank %i: Matrix addition started\n", myrank);
     double** added = addMatrix(numranks, MATRIX_SIZE, NUM_THREADS, mymat, new_transpose);
@@ -98,6 +98,7 @@ int main(int argc, char** argv)
         printf("Calculations took %f seconds\n", time_taken);
     }
 
+    /*
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
     collectiveFileWrite("collectiveOut", MATRIX_SIZE / numranks, MATRIX_SIZE, added_contig, 0, myrank);
@@ -108,6 +109,7 @@ int main(int argc, char** argv)
     if(myrank == 0) {
         printf("Collective with zero padding took %f seconds\n", time_taken);
     }
+    */
 
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
