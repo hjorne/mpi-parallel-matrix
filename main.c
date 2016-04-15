@@ -79,7 +79,7 @@ int main(int argc, char** argv)
     printf("Rank %i: Transfer complete\n", myrank);
 
     printf("Rank %i: Deallocation started\n", myrank);
-    deallocMatrix(mymat, MATRIX_SIZE);
+    deallocMatrix(mymat, MATRIX_SIZE / numranks);
     printf("Rank %i: Deallocation complete\n", myrank);
 
     printf("Rank %i: Matrix addition started\n", myrank);
@@ -87,7 +87,7 @@ int main(int argc, char** argv)
     printf("Rank %i: Matrix addition complete\n", myrank);
 
     printf("Rank %i: Contiguous allocation started\n", myrank);
-    double* added_contig = allocateContiguous(added,MATRIX_SIZE/myrank,MATRIX_SIZE)
+    double* added_contig = allocateContiguous(added,MATRIX_SIZE / numranks, MATRIX_SIZE)
     printf("Rank %i: Contiguous allocation finished\n", myrank);
 
     MPI_Barrier( MPI_COMM_WORLD );
