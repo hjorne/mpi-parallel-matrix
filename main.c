@@ -25,6 +25,15 @@ void printMatrix(double** matrix, int num_rows, int row_length)
     printf("\n\n");
 }
 
+double * allocateContiguous(double** orig, int num_rows, int row_length){
+    double * contig = malloc(sizeof(double) * num_rows * row_length)
+    int i;
+    for(i = 0; i < num_rows; i++){
+        memcpy(contig[i * num_rows * row_length], orig[i], sizeof(double) * row_length);
+    }
+    return contig;
+}
+
 #define FILE_BLOCK_BYTES 8388608
 
 //Usage mpirun -np numranks ./execname <matrix size> <number of threads per rank> <block size>
@@ -68,13 +77,17 @@ int main(int argc, char** argv)
     double** new_transpose = transferData(myrank, numranks, MATRIX_SIZE, mymat, transpose);
     printf("Rank %i: Transfer complete\n", myrank);
 
-    //printf("Rank %i: Deallocation started\n", myrank);
-    //deallocMatrix(transpose, MATRIX_SIZE);
-    //printf("Rank %i: Deallocation complete\n", myrank);
+    printf("Rank %i: Deallocation started\n", myrank);
+    deallocMatrix(mymat, MATRIX_SIZE);
+    printf("Rank %i: Deallocation complete\n", myrank);
 
     printf("Rank %i: Matrix addition started\n", myrank);
     double** added = addMatrix(numranks, MATRIX_SIZE, NUM_THREADS, mymat, new_transpose);
     printf("Rank %i: Matrix addition complete\n", myrank);
+
+    printf("Rank %i: Contiguous allocation started\n", myrank);
+    double* added_contig = allocateContiguous(added,MATRIX_SIZE/myrank,MATRIX_SIZE)
+    printf("Rank %i: Contiguous allocation finished\n", myrank);
 
     MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
@@ -86,7 +99,7 @@ int main(int argc, char** argv)
 
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    collectiveFileWrite("collectiveOut", MATRIX_SIZE / numranks, MATRIX_SIZE, added, 0, myrank);
+    collectiveFileWrite("collectiveOut", MATRIX_SIZE / numranks, MATRIX_SIZE, added_contig, 0, myrank);
     MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
@@ -98,7 +111,7 @@ int main(int argc, char** argv)
 
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    collectiveFileWrite("collectiveOut", MATRIX_SIZE / numranks, MATRIX_SIZE, added, FILE_BLOCK_BYTES,
+    collectiveFileWrite("collectiveOut", MATRIX_SIZE / numranks, MATRIX_SIZE, added_contig, FILE_BLOCK_BYTES,
                         myrank);
     MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
@@ -111,7 +124,7 @@ int main(int argc, char** argv)
 
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 4, 0, added);
+    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 4, 0, added_contig);
     MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
@@ -123,7 +136,7 @@ int main(int argc, char** argv)
 
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 4, FILE_BLOCK_BYTES, added);
+    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 4, FILE_BLOCK_BYTES, added_contig);
     MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
@@ -135,7 +148,7 @@ int main(int argc, char** argv)
 
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 8, 0, added);
+    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 8, 0, added_contig);
     MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
@@ -147,7 +160,7 @@ int main(int argc, char** argv)
 
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 8, FILE_BLOCK_BYTES, added);
+    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 8, FILE_BLOCK_BYTES, added_contig);
     MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
@@ -159,7 +172,7 @@ int main(int argc, char** argv)
 
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
-    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 32, 0, added);
+    groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 32, 0, added_contig);
     MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
@@ -172,7 +185,7 @@ int main(int argc, char** argv)
     MPI_Barrier( MPI_COMM_WORLD );
     start_cycle_time = GetTimeBase();
     groupFileWrite("groupOut", MATRIX_SIZE / numranks, MATRIX_SIZE, myrank, 32, FILE_BLOCK_BYTES,
-                   added);
+                   added_contig);
     MPI_Barrier( MPI_COMM_WORLD );
     end_cycle_time = GetTimeBase();
     total_cycle_time = end_cycle_time - start_cycle_time;
