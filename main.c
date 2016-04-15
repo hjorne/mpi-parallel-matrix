@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <mpi.h>
 #include <math.h>
 #include <hwi/include/bqc/A2_inlines.h>
